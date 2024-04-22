@@ -10,16 +10,16 @@
     border-radius: 5px;
 }
 
-button.blue {
-    background-color: #1fb6ff;
+button.green {
+    background-color: #00d748;
 }
 
-button.green {
-    background-color: #13ce66;
+button.yellow {
+    background-color: #ffca00;
 }
 
 button.red {
-    background-color: #ff4949;
+    background-color: #ff3d57;
 }
 
 button:hover {
