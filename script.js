@@ -6,11 +6,6 @@ const closeModal = () => {
     document.getElementById('modal').classList.remove('active');
 }
 
-
-//CRUD - create, read, update, delete
-
-//Create
-
 const CapturarValores = () => {
 
     let listaUsuario = [];
@@ -21,6 +16,7 @@ const CapturarValores = () => {
     const cidade = document.getElementById('city').value;
 
     const dadosUsuario = {
+        id: Date.now(),
         nome: nome,
         email: email,
         cel: cel,
@@ -35,28 +31,25 @@ const CapturarValores = () => {
 
     localStorage.setItem('usuarioCadastrados', JSON.stringify(listaUsuario));
 
-    document.getElementById('salvar').addEventListener('click', closeModal);
+    // document.getElementById('salvar').addEventListener('click', closeModal);
 
     window.location.reload();
 }
 
 document.getElementById('salvar').addEventListener('click', CapturarValores);
 
+document.getElementById('cancelar').addEventListener('click', closeModal);
+
+function obterUsuarios() {
+    return JSON.parse(localStorage.getItem('usuarioCadastrados'));
+}
+
 function CarregarUsuarios() {
     
-    let listaUsuario = [];
-    
-    if(localStorage.getItem('usuarioCadastrados')) {
-        listaUsuario = JSON.parse(localStorage.getItem('usuarioCadastrados'));
+    let listaUsuario = obterUsuarios();
+    let tabela = document.getElementById('corpo-tabela');
 
-        
-    }
-
-    console.log(listaUsuario)
-    
-    if(listaUsuario.length === 0) {
-        let tabela = document.getElementById('corpo-tabela');
-    
+    if(listaUsuario.length === 0) {    
         tabela.innerHTML = `
             <tr class='linha-mensagem'>
                 <td colspan='6'> Nenhum usuário cadastrado. </td>
@@ -66,7 +59,7 @@ function CarregarUsuarios() {
     else {
         MontarTabela(listaUsuario);
     }
-    } 
+} 
     
 window.addEventListener('DOMContentLoaded', () => CarregarUsuarios());
 
@@ -83,8 +76,8 @@ function MontarTabela(listaDeCadastrados) {
                 <td data-cell='cel'> ${pessoa.cel}</td>
                 <td data-cell='cidade'> ${pessoa.cidade}</td>
                 <td>
-                    <button type="button" class="button green">Editar</button>
-                    <button type="button" class="button red">Excluir</button>
+                    <button type="button" class="button green" id="editar">Editar</button>
+                    <button type="button" class="button red excluir" data-id="${pessoa.id}">Excluir</button>
                 </td>
             </tr>
         `
@@ -93,7 +86,45 @@ function MontarTabela(listaDeCadastrados) {
     tabela.innerHTML = template;
 }
 
-document.getElementById('cadastrarUsuario').addEventListener('click', openModal);
+document.getElementById('corpo-tabela').addEventListener('click', function (event) {
 
+    const target = event.target;
+    if(target.classList.contains( 'excluir')) {
+        const userId = target.getAttribute('data-id');
+        deletarUsuario(userId);
+    }
+    else if(target.classList.contains('editar')) {
+        const userId = target.getAttribute('data-id');
+        editarUsuario(userId);
+    }
+})
+
+function deletarUsuario(userId) {
+
+    let listaUsuario = JSON.parse(localStorage.getItem('usuarioCadastrados')) || [];
+    const indiceDelete = listaUsuario.findIndex(usuario => usuario.id.toString() === userId);
+
+    if(indiceDelete === -1) {
+        alert('Usuário não encontrado.');
+        return;
+    }
+    
+    const nomeUsuario = listaUsuario[indiceDelete].nome;
+
+    const confirmacao = window.confirm(`Você realmente deseja excluir o usuário ${nomeUsuario}?`);
+    
+    if(confirmacao) {
+        listaUsuario.splice(indiceDelete, 1);
+        localStorage.setItem('usuarioCadastrados', JSON.stringify(listaUsuario));
+
+        CarregarUsuarios();
+    } 
+}
+
+function editarUsuario() {
+
+}
+
+document.getElementById('cadastrarUsuario').addEventListener('click', openModal);
 document.getElementById('modalClose').addEventListener('click', closeModal);
 
