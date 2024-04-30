@@ -15,6 +15,8 @@ const CapturarValores = () => {
     const cel = document.getElementById('cel').value;
     const cidade = document.getElementById('city').value;
 
+//  const id = Math.floor(Math.random()*100) --> uma opção para substituir o Date.now();
+
     const dadosUsuario = {
         id: Date.now(),
         nome: nome,
@@ -30,8 +32,6 @@ const CapturarValores = () => {
     listaUsuario.push(dadosUsuario);
 
     localStorage.setItem('usuarioCadastrados', JSON.stringify(listaUsuario));
-
-    // document.getElementById('salvar').addEventListener('click', closeModal);
 
     window.location.reload();
 }
@@ -71,12 +71,12 @@ function MontarTabela(listaDeCadastrados) {
     listaDeCadastrados.forEach(pessoa => {
         template += `
             <tr> 
-                <td data-cell='nome'> ${pessoa.nome}</td>
-                <td data-cell='email'> ${pessoa.email}</td>
-                <td data-cell='cel'> ${pessoa.cel}</td>
-                <td data-cell='cidade'> ${pessoa.cidade}</td>
+                <td> ${pessoa.nome}</td>
+                <td ${pessoa.email}</td>
+                <td> ${pessoa.cel}</td>
+                <td> ${pessoa.cidade}</td>
                 <td>
-                    <button type="button" class="button green" id="editar">Editar</button>
+                    <button type="button" class="button green" data-id="${pessoa.id}">Editar</button>
                     <button type="button" class="button red excluir" data-id="${pessoa.id}">Excluir</button>
                 </td>
             </tr>
@@ -121,7 +121,7 @@ function deletarUsuario(userId) {
     } 
 }
 
-function editarUsuario() {
+function editarUsuario(userId) {
 
 }
 
